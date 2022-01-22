@@ -1,1 +1,1 @@
-# notion-repeat-todo
+# notion-repeat-todo-creator
