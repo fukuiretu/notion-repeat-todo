@@ -1,8 +1,8 @@
 mod notion;
 
 fn main() {
-    let notion_client = notion::NotionClient::new(String::from("dummy"));
-    let result = notion_client.query_database(
+    let database = notion::Database::new(String::from("dummy"));
+    let result = database.query(
         vec![notion::Header {
             name: String::from("content-type"),
             value: String::from("application/json"),

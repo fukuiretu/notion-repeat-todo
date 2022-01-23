@@ -1,17 +1,16 @@
-use hyper::{Body, Method, Request};
+use hyper::{Body, Client, Method, Request};
 
-pub struct Client {
-    common_headers: Vec<Header>,
-}
-
-#[derive(Debug, Clone)]
 pub struct Header {
     pub name: String,
     pub value: String,
 }
 
-impl Client {
-    pub fn new(api_key: String) -> Client {
+pub struct Database {
+    common_headers: Vec<Header>,
+}
+
+impl Database {
+    pub fn new(api_key: String) -> Database {
         Self {
             common_headers: vec![Header {
                 name: String::from("Authorization"),
@@ -21,8 +20,8 @@ impl Client {
     }
 
     #[tokio::main]
-    pub async fn query_database(
-        self: Client,
+    pub async fn query(
+        self: Database,
         headers: Vec<Header>,
         body: String,
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
@@ -40,14 +39,10 @@ impl Client {
             builder = builder.header(&header.name, &header.value);
             println!("header.name:{}, header.value:{}", header.name, header.value);
         }
+        let req = builder.body(Body::from(body))?;
 
-        let result = builder.body(Body::from(body))?;
-
-        // let req = Request::builder()
-        // .method(Method::POST)
-        // .uri("http://httpbin.org/post")
-        // .header("content-type", "application/json")
-        // .body(Body::from(r#"{"library":"hyper"}"#))?;
+        let resp = Client::new().request(req).await?;
+        println!("Response: {}", resp.status());
 
         Ok(())
     }
