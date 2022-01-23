@@ -1,7 +1,7 @@
 mod notion;
 
 fn main() {
-    let notion_client = notion::Client::new(String::from("dummy"));
+    let notion_client = notion::NotionClient::new(String::from("dummy"));
     let result = notion_client.query_database(
         vec![notion::Header {
             name: String::from("content-type"),
