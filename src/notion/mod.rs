@@ -10,18 +10,31 @@ pub struct Database {
 }
 
 impl Database {
+    const QUERY_BASE_URL: &'static str = "https://api.notion.com/v1/databases/{database_id}/query";
+
     pub fn new(api_key: String) -> Database {
         Self {
-            common_headers: vec![Header {
-                name: String::from("Authorization"),
-                value: api_key,
-            }],
+            common_headers: vec![
+                Header {
+                    name: String::from("Authorization"),
+                    value: api_key,
+                },
+                Header {
+                    name: String::from("Notion-Version"),
+                    value: String::from("2021-08-16"),
+                },
+                Header {
+                    name: String::from("Content-Type"),
+                    value: String::from("application/json"),
+                },
+            ],
         }
     }
 
     #[tokio::main]
     pub async fn query(
         self: Database,
+        database_id: String,
         headers: Vec<Header>,
         body: String,
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
@@ -29,7 +42,7 @@ impl Database {
 
         let mut builder = Request::builder()
             .method(Method::POST)
-            .uri("http://httpbin.org/post");
+            .uri(Self::QUERY_BASE_URL.replace("{database_id}", database_id.as_str()));
 
         for header in self.common_headers {
             builder = builder.header(&header.name, &header.value);
