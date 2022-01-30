@@ -6,4 +6,5 @@ fn main() {
     // match result {
     // Ok() =>
     // }
+    let client = notion::client::Default::new(String::from("hoge"));
 }
