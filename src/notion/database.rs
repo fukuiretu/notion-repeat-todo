@@ -1,5 +1,4 @@
 use hyper::{Body, Client, Method, Request};
-pub mod client;
 
 pub struct Header {
     pub name: String,
