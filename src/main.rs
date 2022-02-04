@@ -1,4 +1,4 @@
-use notion_repeat_todo_creator::notion::client::{Client, Default};
+use notion_repeat_todo_creator::notion::client::{Base, Default};
 use notion_repeat_todo_creator::notion::database::Database;
 
 fn main() {
