@@ -1,24 +1,11 @@
 use reqwest;
 
-pub struct RequestHeader {
-    pub name: String,
-    pub value: String,
-}
-
 pub trait Base {
+    const NOTION_VERSION: &'static str = "2021-08-16";
+
     fn new(api_key: String) -> Self;
-    fn get(
-        &self,
-        headers: Vec<RequestHeader>,
-        url: String,
-        body: String,
-    ) -> Result<(), reqwest::Error>;
-    fn post(
-        &self,
-        headers: Vec<RequestHeader>,
-        url: String,
-        data: String,
-    ) -> Result<(), Box<dyn std::error::Error>>;
+    fn get(&self, url: String, body: String) -> Result<(), reqwest::Error>;
+    fn post(&self, url: String, data: String) -> Result<(), reqwest::Error>;
 
     fn client(&self) -> reqwest::Client {
         let mut headers = reqwest::header::HeaderMap::new();
@@ -28,7 +15,7 @@ pub trait Base {
         );
         headers.insert(
             "Notion-Version",
-            reqwest::header::HeaderValue::from_static("2021-08-16"),
+            reqwest::header::HeaderValue::from_static(Self::NOTION_VERSION),
         );
 
         reqwest::Client::builder()
@@ -46,23 +33,14 @@ impl Base for Default {
         Default { api_key }
     }
 
-    fn get(
-        &self,
-        headers: Vec<RequestHeader>,
-        url: String,
-        body: String,
-    ) -> Result<(), reqwest::Error> {
+    fn get(&self, url: String, data: String) -> Result<(), reqwest::Error> {
         Ok(())
     }
 
     #[tokio::main]
-    async fn post(
-        &self,
-        headers: Vec<RequestHeader>,
-        url: String,
-        data: String,
-    ) -> Result<(), Box<dyn std::error::Error>> {
-        self.client()
+    async fn post(&self, url: String, data: String) -> Result<(), reqwest::Error> {
+        let res = self
+            .client()
             .post(url)
             .header("Authorization", format!("Bearer '{}'", self.api_key))
             .body(data)

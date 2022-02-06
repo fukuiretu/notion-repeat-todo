@@ -1,25 +1,24 @@
 use super::client;
 
-pub struct Database<T: client::Base> {
+pub struct Query<T: client::Base> {
     client: T,
 }
 
-impl<T: client::Base> Database<T> {
+impl<T: client::Base> Query<T> {
     const QUERY_BASE_URL: &'static str = "https://api.notion.com/v1/databases/{database_id}/query";
 
-    pub fn new(client: T) -> Database<T> {
+    pub fn new(client: T) -> Query<T> {
         Self { client }
     }
 
-    pub fn query(
-        self: Database<T>,
+    pub fn call(
+        self: Query<T>,
         database_id: String,
         data: String,
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         println!("call query_catabase.");
 
         self.client.post(
-            vec![],
             Self::QUERY_BASE_URL.replace("{database_id}", database_id.as_str()),
             data,
         );
