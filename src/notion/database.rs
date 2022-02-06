@@ -1,33 +1,27 @@
 use super::client;
 
-pub struct Header {
-    pub name: String,
-    pub value: String,
-}
-
-pub struct Database<T: client::Client> {
+pub struct Database<T: client::Base> {
     client: T,
 }
 
-impl<T: client::Client> Database<T> {
+impl<T: client::Base> Database<T> {
     const QUERY_BASE_URL: &'static str = "https://api.notion.com/v1/databases/{database_id}/query";
 
     pub fn new(client: T) -> Database<T> {
         Self { client }
     }
 
-    #[tokio::main]
-    pub async fn query(
+    pub fn query(
         self: Database<T>,
         database_id: String,
-        body: String,
+        data: String,
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         println!("call query_catabase.");
 
-        self.client.get(
-            String::from(""),
+        self.client.post(
+            vec![],
             Self::QUERY_BASE_URL.replace("{database_id}", database_id.as_str()),
-            body,
+            data,
         );
 
         // let mut builder = Request::builder()
